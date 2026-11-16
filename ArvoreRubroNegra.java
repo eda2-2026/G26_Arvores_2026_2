@@ -150,12 +150,23 @@ public class ArvoreRubroNegra {
 
     /* Busca pela chave (vruntime, pid). Devolve null se nao achar. */
     public No buscar(int vruntime, int pid) {
-        throw new UnsupportedOperationException("Pessoa A: buscar");
+        No atual = raiz;
+        while (atual != nil) {
+            int comparacao = comparar(vruntime, pid, atual.processo);
+            if (comparacao == 0)
+                return atual;
+            atual = comparacao < 0 ? atual.esq : atual.dir;
+        }
+        return null;
     }
 
-    /* Menor no da subarvore com raiz x (x nao pode ser o nil). */
+    /* Menor no da subarvore com raiz x; null se a subarvore estiver vazia. */
     public No minimo(No x) {
-        throw new UnsupportedOperationException("Pessoa A: minimo");
+        if (x == null || x == nil)
+            return null;
+        while (x.esq != nil)
+            x = x.esq;
+        return x;
     }
 
 
