@@ -99,14 +99,12 @@ public class MiniCFS extends JPanel {
 
     // ---------- Comandos ----------
 
-    /* Roda um comando e atualiza a tela. Enquanto a parte da Pessoa A nao
-       estiver pronta, os metodos dela lancam UnsupportedOperationException:
-       em vez de travar, a tela mostra o que falta. */
+    /* Roda um comando e atualiza a tela. */
     private void rodarComando(Runnable comando) {
         try {
             comando.run();
-        } catch (UnsupportedOperationException e) {
-            mostrar("Ainda falta implementar: " + e.getMessage(), true);
+        } catch (ArithmeticException e) {
+            mostrar("Limite de vruntime atingido. A rodada nao foi executada.", true);
         }
         atualizarTela();
     }
