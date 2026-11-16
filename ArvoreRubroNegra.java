@@ -7,8 +7,7 @@ import java.util.List;
  * Divisao do trabalho neste arquivo:
  *   - Pessoa B (pronto): construtor, remocao (transplante, remover e
  *     correcao apos remover), percurso em ordem e busca por pid.
- *   - Pessoa A (a fazer): rotacoes, inserir, buscar e minimo. Por enquanto
- *     estao so com a assinatura, para o resto do codigo compilar.
+ *   - Pessoa A: rotacoes, insercao balanceada, busca e minimo.
  *
  * Usa um no sentinela "nil" (sempre PRETO) no lugar de null, como no
  * Cormen, "Algoritmos", capitulo 13.
@@ -40,23 +39,113 @@ public class ArvoreRubroNegra {
 
 
     // =====================================================================
-    // PESSOA A - a implementar (por enquanto so as assinaturas)
+    // PESSOA A
     // =====================================================================
 
     /* Rotacoes. Atencao: ao mover o filho do meio, so atualize o pai dele
        se ele NAO for o nil (como no Cormen). A correcao da remocao usa
        nil.pai e quebra se a rotacao mexer nele. */
     private void rotacaoEsquerda(No x) {
-        throw new UnsupportedOperationException("Pessoa A: rotacaoEsquerda");
+        No y = x.dir;
+        x.dir = y.esq;
+        if (y.esq != nil)
+            y.esq.pai = x;
+        y.pai = x.pai;
+        if (x.pai == nil)
+            raiz = y;
+        else if (x == x.pai.esq)
+            x.pai.esq = y;
+        else
+            x.pai.dir = y;
+        y.esq = x;
+        x.pai = y;
     }
 
     private void rotacaoDireita(No x) {
-        throw new UnsupportedOperationException("Pessoa A: rotacaoDireita");
+        No y = x.esq;
+        x.esq = y.dir;
+        if (y.dir != nil)
+            y.dir.pai = x;
+        y.pai = x.pai;
+        if (x.pai == nil)
+            raiz = y;
+        else if (x == x.pai.dir)
+            x.pai.dir = y;
+        else
+            x.pai.esq = y;
+        y.dir = x;
+        x.pai = y;
     }
 
     /* Cria um no VERMELHO com o processo p e insere, com a correcao de cores. */
     public void inserir(Processo p) {
-        throw new UnsupportedOperationException("Pessoa A: inserir");
+        if (p == null)
+            throw new IllegalArgumentException("Processo nao pode ser nulo.");
+        No z = new No(p, Cor.VERMELHO);
+        No pai = nil;
+        No atual = raiz;
+        while (atual != nil) {
+            pai = atual;
+            int comparacao = comparar(p.getVruntime(), p.getPid(), atual.processo);
+            if (comparacao == 0)
+                throw new IllegalArgumentException("Chave (vruntime, pid) repetida.");
+            atual = comparacao < 0 ? atual.esq : atual.dir;
+        }
+        z.pai = pai;
+        z.esq = nil;
+        z.dir = nil;
+        if (pai == nil)
+            raiz = z;
+        else if (comparar(p.getVruntime(), p.getPid(), pai.processo) < 0)
+            pai.esq = z;
+        else
+            pai.dir = z;
+        corrigirInsercao(z);
+    }
+
+    private int comparar(int vruntime, int pid, Processo p) {
+        int resultado = Integer.compare(vruntime, p.getVruntime());
+        return resultado != 0 ? resultado : Integer.compare(pid, p.getPid());
+    }
+
+    /* Pai e tio vermelhos: recolorir. Tio preto: alinhar e rotacionar. */
+    private void corrigirInsercao(No z) {
+        while (z.pai.cor == Cor.VERMELHO) {
+            if (z.pai == z.pai.pai.esq) {
+                No tio = z.pai.pai.dir;
+                if (tio.cor == Cor.VERMELHO) {
+                    z.pai.cor = Cor.PRETO;
+                    tio.cor = Cor.PRETO;
+                    z.pai.pai.cor = Cor.VERMELHO;
+                    z = z.pai.pai;
+                } else {
+                    if (z == z.pai.dir) {
+                        z = z.pai;
+                        rotacaoEsquerda(z);
+                    }
+                    z.pai.cor = Cor.PRETO;
+                    z.pai.pai.cor = Cor.VERMELHO;
+                    rotacaoDireita(z.pai.pai);
+                }
+            } else {
+                No tio = z.pai.pai.esq;
+                if (tio.cor == Cor.VERMELHO) {
+                    z.pai.cor = Cor.PRETO;
+                    tio.cor = Cor.PRETO;
+                    z.pai.pai.cor = Cor.VERMELHO;
+                    z = z.pai.pai;
+                } else {
+                    if (z == z.pai.esq) {
+                        z = z.pai;
+                        rotacaoDireita(z);
+                    }
+                    z.pai.cor = Cor.PRETO;
+                    z.pai.pai.cor = Cor.VERMELHO;
+                    rotacaoEsquerda(z.pai.pai);
+                }
+            }
+        }
+        raiz.cor = Cor.PRETO;
     }
 
     /* Busca pela chave (vruntime, pid). Devolve null se nao achar. */
