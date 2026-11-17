@@ -146,6 +146,10 @@ A árvore à esquerda mostra o `vruntime` dentro de cada nó e o PID abaixo.
 A tabela à direita lista os processos em ordem; sua primeira linha indica
 o próximo processo a executar. A raiz da árvore não é necessariamente o mínimo.
 
+### Apresentação em Vídeo
+
+[Assista à apresentação do MiniCFS no YouTube](https://youtu.be/risaR9Pt2hg).
+
 ### Capturas de Tela
 
 Os quatro registros abaixo mostram o balanceamento após inserções, a mudança
