@@ -148,6 +148,8 @@ o próximo processo a executar. A raiz da árvore não é necessariamente o mín
 
 ### Apresentação em Vídeo
 
+[![Miniatura da apresentação do MiniCFS no YouTube](https://img.youtube.com/vi/risaR9Pt2hg/hqdefault.jpg)](https://youtu.be/risaR9Pt2hg)
+
 [Assista à apresentação do MiniCFS no YouTube](https://youtu.be/risaR9Pt2hg).
 
 ### Capturas de Tela
